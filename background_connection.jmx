@@ -24,7 +24,7 @@
           </elementProp>
           <elementProp name="ifSubTopic" elementType="Argument">
             <stringProp name="Argument.name">ifSubTopic</stringProp>
-            <stringProp name="Argument.value">false</stringProp>
+            <stringProp name="Argument.value">true</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">true or false</stringProp>
           </elementProp>
@@ -44,7 +44,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">60000</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">300</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">360</stringProp>
         <longProp name="ThreadGroup.start_time">1518079165000</longProp>
         <longProp name="ThreadGroup.end_time">1518079165000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -77,21 +77,23 @@
           <stringProp name="mqtt.conn_clean_session">true</stringProp>
         </net.xmeter.samplers.ConnectSampler>
         <hashTree/>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="false">
-          <stringProp name="IfController.condition">${__jexl3(${ifSubTopic} == &quot;true&quot;)}</stringProp>
-          <boolProp name="IfController.evaluateAll">false</boolProp>
-          <boolProp name="IfController.useExpression">false</boolProp>
-        </IfController>
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <intProp name="LoopController.loops">-1</intProp>
+        </LoopController>
         <hashTree>
-          <net.xmeter.samplers.SubSampler guiclass="net.xmeter.gui.SubSamplerUI" testclass="net.xmeter.samplers.SubSampler" testname="MQTT Sub Sampler" enabled="true">
-            <stringProp name="mqtt.topic_name">test_topic_${__threadNum}</stringProp>
-            <stringProp name="mqtt.qos_level">0</stringProp>
-            <boolProp name="mqtt.add_timestamp">false</boolProp>
-            <boolProp name="mqtt.debug_response">false</boolProp>
-            <stringProp name="mqtt.sample_condition">number of received messages</stringProp>
-            <stringProp name="mqtt.sample_condition_value">1</stringProp>
-            <stringProp name="TestPlan.comments">this sub sampler will not return if no message arrives, thus connection will be kept forever.</stringProp>
-          </net.xmeter.samplers.SubSampler>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <net.xmeter.samplers.PubSampler guiclass="net.xmeter.gui.PubSamplerUI" testclass="net.xmeter.samplers.PubSampler" testname="MQTT Pub Sampler" enabled="true">
+            <stringProp name="mqtt.topic_name">test_topic</stringProp>
+            <stringProp name="mqtt.qos_level">1</stringProp>
+            <boolProp name="mqtt.add_timestamp">true</boolProp>
+            <stringProp name="mqtt.message_type">Random string with fixed length</stringProp>
+            <stringProp name="mqtt.message_type_fixed_length">1024</stringProp>
+            <stringProp name="mqtt.message_to_sent">Hello World!!</stringProp>
+            <boolProp name="mqtt.retained_message">false</boolProp>
+          </net.xmeter.samplers.PubSampler>
           <hashTree/>
         </hashTree>
         <net.xmeter.samplers.DisConnectSampler guiclass="net.xmeter.gui.DisConnectSamplerUI" testclass="net.xmeter.samplers.DisConnectSampler" testname="MQTT DisConnect" enabled="false">
